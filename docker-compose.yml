@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     ports:
-      - "2283:2283"
+      - "3004:2283"
     depends_on:
       - redis
       - postgres
@@ -26,6 +26,16 @@ services:
       - model-cache:/cache
     env_file:
       - .env
+    restart: always
+    networks:
+      - mainframe_network
+
+  cloudflared:
+    container_name: mainframe_cloudflared
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://immich-server:2283
+    depends_on:
+      - immich-server
     restart: always
     networks:
       - mainframe_network
